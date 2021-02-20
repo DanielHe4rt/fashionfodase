@@ -21,6 +21,11 @@ class ProductRepository
         $this->model = new Product();
     }
 
+    public function createProduct(array $data): Product
+    {
+        return $this->newProduct($data);
+    }
+
     public function createMassProducts(UploadedFile $file): void
     {
         $mime = $file->getClientOriginalExtension();
@@ -65,23 +70,34 @@ class ProductRepository
                 continue;
             }
 
-            $model = $this->model->create([
-                'name' => $product['name'],
-                'external_id' => $product['id']
-            ]);
-
-            $tagIds = $this->getTagIds($product['tags']);
-            $model->tags()->sync($tagIds);
+            $this->newProduct($product);
         }
     }
 
-    public function getTagIds(array $tagNames): array
+    public function newProduct(array $product): Product
     {
-        $result = [];
-        foreach ($tagNames as $tag) {
-            $model = Tag::firstOrCreate(['name' => $tag]);
-            $result[] = $model->id;
-        }
-        return $result;
+        $model = $this->model->create([
+            'name' => $product['name'],
+            'external_id' => $product['id'] ?? $product['external_id']
+        ]);
+
+        $tagIds = app(TagRepository::class)->getTagIds($product['tags']);
+        $model->tags()->sync($tagIds);
+
+        return $model;
+    }
+
+
+
+    public function updateProduct(int $externalId, array $data): Product
+    {
+        $model = $this->model->where('external_id', $externalId)->first();
+        $model->update($data);
+        return $model;
+    }
+
+    public function deleteProduct(int $externalId)
+    {
+        $this->model->where('external_id', $externalId)->delete();
     }
 }

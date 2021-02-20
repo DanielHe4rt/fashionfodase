@@ -18,4 +18,7 @@ $router->get('/test', 'ExampleController@getTest');
 
 
 $router->get('/products', 'ProductController@getProducts');
-$router->post('/products', 'ProductController@postProducts');
+$router->post('/products', 'ProductController@postProduct');
+$router->post('/products/mass', 'ProductController@postMassProducts');
+$router->put('/products/{externalId}', 'ProductController@putProduct');
+$router->delete('/products/{externalId}', 'ProductController@deleteProduct');
