@@ -14,3 +14,4 @@
 */
 
 $router->get('/', 'ExampleController@getWelcome');
+$router->get('/test', 'ExampleController@getTest');
