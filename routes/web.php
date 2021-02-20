@@ -15,3 +15,7 @@
 
 $router->get('/', 'ExampleController@getWelcome');
 $router->get('/test', 'ExampleController@getTest');
+
+
+$router->get('/products', 'ProductController@getProducts');
+$router->post('/products', 'ProductController@postProducts');
